@@ -9,29 +9,47 @@ namespace EjemploAutoMapper
         public static void Main(string[] args)
         {
             var mapper = CreateMapper();
-            var entidadAutor = new AuthorEntity 
-            { 
+            var entidadAutor = new AuthorEntity
+            {
+                Id = 2,
                 Name = "Joanne Rowling",
                 Age = 50,
-                Books = new List<BookEntity>() 
+                Books = new List<BookEntity>()
                 {
-                    new BookEntity { Title = "Harry Potter", Subtitle = "y la piedra filosofal" },
-                    new BookEntity { Title = "Harry Potter", Subtitle = "y la cámara secreta" },
-                    new BookEntity { Title = "Una vacante imprevista" }
+                    new BookEntity { Id = 4, Title = "Harry Potter", Subtitle = "y la piedra filosofal" },
+                    new BookEntity { Id = 3, Title = "Harry Potter", Subtitle = "y la cámara secreta" },
+                    new BookEntity { Id = 9, Title = "Una vacante imprevista" }
                 }
             };
 
+            #region Manual mapping
+
+            #endregion
+
             var bookEntity = new BookEntity
             {
-                    Title ="C# 6 in a Nutshell",
-                    Edition = 6,
-                    Pages = 1114,
-                    Author = new AuthorEntity 
-                    {
-                        Name = "Joseph Albahari",
-                        Age = 35
-                    }
+                Id = 30,
+                Title = "C# 6 in a Nutshell",
+                Edition = 6,
+                Pages = 1114,
+                Author = new AuthorEntity
+                {
+                    Name = "Joseph Albahari",
+                    Age = 35
+                }
             };
+
+            #region Manual mapping
+            //var modeloAutor = new AuthorModel();
+            //modeloAutor.Name = entidadAutor.Name;
+            //modeloAutor.Age = entidadAutor.Age;
+            //modeloAutor.BooksCount = entidadAutor.Books != null ? entidadAutor.Books.Count : 0;
+
+            //var modeloLibro = new BookModel();
+            //modeloLibro.FullTitle = bookEntity.Title + " " + bookEntity.Subtitle;
+            //modeloLibro.AuthorName = bookEntity.Author != null ? bookEntity.Author.Name : null;
+            //modeloLibro.Pages = bookEntity.Pages;
+            #endregion
             
             var modeloAutor = mapper.Map<AuthorModel>(entidadAutor);
             Console.WriteLine("Información de autor");
@@ -52,15 +70,15 @@ namespace EjemploAutoMapper
         static IMapper CreateMapper()
         {
             var automappingConfiguration = new AutoMapper.MapperConfiguration(config =>
-            {
-                config.CreateMap<AuthorEntity, AuthorModel>();
+                {
+                    config.CreateMap<AuthorEntity, AuthorModel>();
 
                     config.CreateMap<BookEntity, BookModel>()
-                        .ForMember(model=> model.AuthorName, 
-                            opt => opt.ResolveUsing(entity => entity.Author.Name))
+                        .ForMember(model => model.AuthorName, 
+                        opt => opt.ResolveUsing(entity => entity.Author.Name))
                         .ForMember(model => model.FullTitle,
-                            opt => opt.ResolveUsing(entity => entity.Title + " " + entity.Subtitle));
-            });
+                        opt => opt.ResolveUsing(entity => entity.Title + " " + entity.Subtitle));
+                });
 
             return automappingConfiguration.CreateMapper();
         }
